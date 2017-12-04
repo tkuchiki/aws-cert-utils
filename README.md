@@ -398,9 +398,9 @@ $ ./aws-cert-utils cloudfront list
 +-----------------+------------------------------+-----------------------------------------------------------------+
 | DISTRIBUTION ID |           ALIASES            |                         SSL CERTIFICATE                         |
 +-----------------+------------------------------+-----------------------------------------------------------------+
-| 11111111111111  | iam.example.com              | XXXXXXXXXXXXXXXXXXXXX                                           |
+| 11111111111111  | iam.example.com              | XXXXXXXXXXXXXXXXXXXXX | test-cert-name                          |
 +-----------------+------------------------------+-----------------------------------------------------------------+
-| 22222222222222  | iam2.example.com              | XXXXXXXXXXXXXXXXXXXXX                                           |
+| 22222222222222  | iam2.example.com             | XXXXXXXXXXXXXXXXXXXXX | test-cert-name                          |
 +-----------------+------------------------------+-----------------------------------------------------------------+
 
 $ ./aws-cert-utils cloudfront bulk-update --source-iam-id XXXXXXXXXXXXXXXXXXXXX --dest-acm-arn arn:aws:acm:us-east-1:xxxxxxxxxxxx:certificate/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
