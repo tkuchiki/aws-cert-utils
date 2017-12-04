@@ -217,11 +217,13 @@ func main() {
 		case "delete":
 			arn := *acmDeleteArn
 			if arn == "" {
-				arns, err := a.ListArns(*acmDeleteStatuses, int64(*acmDeleteMaxItems), "")
+				arns, targets, err := a.ListDeleteTargets(*acmDeleteStatuses, int64(*acmDeleteMaxItems), "")
 				if err != nil {
 					log.Fatal(err)
 				}
 				arn = certutils.Choice(arns, "Choose the server certificate you want to delete : ", 20)
+
+				arn = targets[arn]
 
 				if arn == "" {
 					os.Exit(0)

@@ -138,7 +138,7 @@ Imported arn:aws:acm:us-east-1:xxxxxxxxxxxx:certificate/zzzzzzzz-zzzz-zzzz-zzzz-
 
 ```console
 $ ./aws-cert-utils acm delete
-? Choose the server certificate you want to delete :  arn:aws:acm:us-east-1:xxxxxxxxxxxx:certificate/zzzzzzzz-zzzz-zzzz-zzzz-zzzzzzzzzzzz
+? Choose the server certificate you want to delete : [example.com] arn:aws:acm:us-east-1:xxxxxxxxxxxx:certificate/zzzzzzzz-zzzz-zzzz-zzzz-zzzzzzzzzzzz
 Deleted arn:aws:acm:us-east-1:xxxxxxxxxxxx:certificate/zzzzzzzz-zzzz-zzzz-zzzz-zzzzzzzzzzzz
 ```
 

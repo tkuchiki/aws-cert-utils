@@ -117,15 +117,21 @@ func (a *ACM) List(statuses string, maxItems int64, nextToken string) ([]ACMDesc
 	return descs, err
 }
 
-func (a *ACM) ListArns(statuses string, maxItems int64, nextToken string) ([]string, error) {
+func (a *ACM) ListDeleteTargets(statuses string, maxItems int64, nextToken string) ([]string, map[string]string, error) {
 	descs, err := a.List(statuses, maxItems, nextToken)
-
-	arns := make([]string, 0, len(descs))
-	for _, desc := range descs {
-		arns = append(arns, desc.arn)
+	if err != nil {
+		return []string{}, map[string]string{}, err
 	}
 
-	return arns, err
+	targets := make(map[string]string, 0)
+	arns := make([]string, 0, len(descs))
+	for _, desc := range descs {
+		tagArn := fmt.Sprintf("[%s] %s", desc.nameTag, desc.arn)
+		arns = append(arns, tagArn)
+		targets[tagArn] = desc.arn
+	}
+
+	return arns, targets, err
 }
 
 func toACMTags(tags []Tag) []*acm.Tag {
