@@ -14,8 +14,18 @@ usage: aws-cert-utils [<flags>] <command> [<args> ...]
 Certificate Utility for AWS(ACM, IAM, ALB, ELB, CloudFront)
 
 Flags:
-  --help     Show context-sensitive help (also try --help-long and --help-man).
-  --version  Show application version.
+  --help                     Show context-sensitive help (also try --help-long
+                             and --help-man).
+  --access-key=ACCESS-KEY    The AWS access key ID
+  --secret-key=SECRET-KEY    The AWS secret access key
+  --assume-role-arn=ASSUME-ROLE-ARN  
+                             The AWS assume role ARN
+  --token=TOKEN              The AWS access token
+  --region=REGION            The AWS region
+  --profile=PROFILE          The AWS CLI profile
+  --aws-config=AWS-CONFIG    The AWS CLI Config file
+  --credentials=CREDENTIALS  The AWS CLI Credential file
+  --version                  Show application version.
 
 Commands:
   help [<command>...]
@@ -31,7 +41,7 @@ Commands:
   acm delete [<flags>]
     Deletes an ACM Certificate and its associated private key
 
-  iam list
+  iam list [<flags>]
     Lists the server certificates stored in IAM that have the specified path
     prefix
 
@@ -71,7 +81,6 @@ Commands:
 
   alb bulk-update [<flags>]
     Updates the specified listeners from the specified load balancer
-
 ```
 
 ### ACM
