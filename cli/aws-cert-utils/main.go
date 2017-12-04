@@ -136,7 +136,7 @@ var (
 )
 
 func main() {
-	crtMngr.Version("0.1.0")
+	crtMngr.Version("0.1.1")
 	subCmd, err := crtMngr.Parse(os.Args[1:])
 
 	if err != nil {

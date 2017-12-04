@@ -8,13 +8,15 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/cloudfront"
+	"github.com/aws/aws-sdk-go/service/iam"
 	"github.com/olekukonko/tablewriter"
 )
 
 type CloudFront struct {
-	client   *cloudfront.CloudFront
-	marker   string
-	maxItems int64
+	client    *cloudfront.CloudFront
+	iamClient *IAM
+	marker    string
+	maxItems  int64
 }
 
 type CFDistribution struct {
@@ -27,7 +29,10 @@ type CFDistribution struct {
 
 func NewCloudFront(sess *session.Session, marker string, maxItems int64) *CloudFront {
 	return &CloudFront{
-		client:   cloudfront.New(sess),
+		client: cloudfront.New(sess),
+		iamClient: &IAM{
+			client: iam.New(sess),
+		},
 		marker:   marker,
 		maxItems: int64(maxItems),
 	}
@@ -49,6 +54,15 @@ func createCFListDistributionsInput(marker string, maxItems int64) *cloudfront.L
 
 func (cf *CloudFront) getDistributions(certFilter, aliasesFilter string) ([]CFDistribution, error) {
 	out, err := cf.client.ListDistributions(createCFListDistributionsInput(cf.marker, cf.maxItems))
+	if err != nil {
+		return []CFDistribution{}, err
+	}
+
+	iamDescs, err := cf.iamClient.ListMap("", int64(0), "")
+	if err != nil {
+		return []CFDistribution{}, err
+	}
+
 	dists := make([]CFDistribution, 0, len(out.DistributionList.Items))
 	for _, summary := range out.DistributionList.Items {
 		dist := CFDistribution{}
@@ -57,7 +71,7 @@ func (cf *CloudFront) getDistributions(certFilter, aliasesFilter string) ([]CFDi
 		if aws.StringValue(vCert.ACMCertificateArn) != "" {
 			dist.cert = *vCert.ACMCertificateArn
 		} else if aws.StringValue(vCert.IAMCertificateId) != "" {
-			dist.cert = *vCert.IAMCertificateId
+			dist.cert = fmt.Sprintf("%s | %s", *vCert.IAMCertificateId, iamDescs[*vCert.IAMCertificateId].name)
 		} else {
 			continue
 		}

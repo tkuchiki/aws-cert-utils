@@ -83,6 +83,25 @@ func (i *IAM) List(marker string, maxItems int64, path string) ([]IAMDescription
 	return descs, err
 }
 
+func (i *IAM) ListMap(marker string, maxItems int64, path string) (map[string]IAMDescription, error) {
+	out, err := i.client.ListServerCertificates(createIAMListServerCertificatesInput(marker, maxItems, path))
+	if err != nil {
+		return map[string]IAMDescription{}, err
+	}
+
+	certs := make(map[string]IAMDescription, 0)
+	for _, metadata := range out.ServerCertificateMetadataList {
+		certs[*metadata.ServerCertificateId] = IAMDescription{
+			name: *metadata.ServerCertificateName,
+			id:   *metadata.ServerCertificateId,
+			path: *metadata.Path,
+			arn:  *metadata.Arn,
+		}
+	}
+
+	return certs, err
+}
+
 func (i *IAM) ListNames(marker string, maxItems int64, path string) ([]string, error) {
 	descs, err := i.List(marker, maxItems, path)
 	if err != nil {
