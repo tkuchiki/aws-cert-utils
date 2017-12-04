@@ -68,16 +68,22 @@ func (cf *CloudFront) getDistributions(certFilter, aliasesFilter string) ([]CFDi
 		dist := CFDistribution{}
 
 		vCert := summary.ViewerCertificate
+		var iamCert string
 		if aws.StringValue(vCert.ACMCertificateArn) != "" {
 			dist.cert = *vCert.ACMCertificateArn
 		} else if aws.StringValue(vCert.IAMCertificateId) != "" {
-			dist.cert = fmt.Sprintf("%s | %s", *vCert.IAMCertificateId, iamDescs[*vCert.IAMCertificateId].name)
+			dist.cert = *vCert.IAMCertificateId
+			iamCert = fmt.Sprintf("%s | %s", *vCert.IAMCertificateId, iamDescs[*vCert.IAMCertificateId].name)
 		} else {
 			continue
 		}
 
 		if certFilter != "" && dist.cert != certFilter {
 			continue
+		}
+
+		if iamCert != "" {
+			dist.cert = iamCert
 		}
 
 		aliases := summary.Aliases.Items
