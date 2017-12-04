@@ -11,18 +11,18 @@ import (
 )
 
 var (
-	crtMngr            = kingpin.New("aws-cert-utils", "Certificate Utility for AWS(ACM, IAM, ALB, ELB, CloudFront)")
-	awsAccessKeyID     = kingpin.Flag("access-key", "The AWS access key ID").String()
-	awsSecretAccessKey = kingpin.Flag("secret-key", "The AWS secret access key").String()
-	awsArn             = kingpin.Flag("arn", "The AWS assume role ARN").String()
-	awsToken           = kingpin.Flag("token", "The AWS access token").String()
-	awsRegion          = kingpin.Flag("region", "The AWS region").String()
-	awsProfile         = kingpin.Flag("profile", "The AWS CLI profile").String()
-	awsConfig          = kingpin.Flag("aws-config", "The AWS CLI Config file").String()
-	awsCreds           = kingpin.Flag("credentials", "The AWS CLI Credential file").String()
+	crtUtils           = kingpin.New("aws-cert-utils", "Certificate Utility for AWS(ACM, IAM, ALB, ELB, CloudFront)")
+	awsAccessKeyID     = crtUtils.Flag("access-key", "The AWS access key ID").String()
+	awsSecretAccessKey = crtUtils.Flag("secret-key", "The AWS secret access key").String()
+	awsArn             = crtUtils.Flag("assume-role-arn", "The AWS assume role ARN").String()
+	awsToken           = crtUtils.Flag("token", "The AWS access token").String()
+	awsRegion          = crtUtils.Flag("region", "The AWS region").String()
+	awsProfile         = crtUtils.Flag("profile", "The AWS CLI profile").String()
+	awsConfig          = crtUtils.Flag("aws-config", "The AWS CLI Config file").String()
+	awsCreds           = crtUtils.Flag("credentials", "The AWS CLI Credential file").String()
 
 	// acm
-	acmCmd = crtMngr.Command("acm", "AWS Certificate Manager (ACM)")
+	acmCmd = crtUtils.Command("acm", "AWS Certificate Manager (ACM)")
 	// acm list
 	acmListCmd      = acmCmd.Command("list", "Retrieves a list of ACM Certificates and the domain name for each")
 	acmListStatuses = acmListCmd.Flag("cert-statuses", "The status or statuses on which to filter the list of ACM Certificates(comma separated)").Default("ALL").String()
@@ -45,7 +45,7 @@ var (
 	acmDeleteMaxItems = acmDeleteCmd.Flag("max-items", "The total number of items to return in the command's output").Int()
 
 	// iam
-	iamCmd = crtMngr.Command("iam", "AWS  Identity and Access Management (IAM)")
+	iamCmd = crtUtils.Command("iam", "AWS  Identity and Access Management (IAM)")
 	// iam list
 	iamListCmd        = iamCmd.Command("list", "Lists the server certificates stored in IAM that have the specified path prefix")
 	iamListMarker     = iamListCmd.Flag("marker", "Paginating results and only after you receive a response indicating that the results are truncated").String()
@@ -77,7 +77,7 @@ var (
 	iamDeletePathPrefix = iamDeleteCmd.Flag("path-prefix", "The path prefix for filtering the results").Default("/").String()
 
 	// cloudfront
-	cfCmd      = crtMngr.Command("cloudfront", "Amazon CloudFront")
+	cfCmd      = crtUtils.Command("cloudfront", "Amazon CloudFront")
 	cfMarker   = cfCmd.Flag("marker", "Paginating results and only after you receive a response indicating that the results are truncated").String()
 	cfMaxItems = cfCmd.Flag("max-items", "The total number of items to return in the command's output").Int()
 
@@ -101,7 +101,7 @@ var (
 	cfBUpdateNoDryRun   = cfBUpdateCmd.Flag("no-dry-run", "Disable dry-run mode").Bool()
 
 	// elb
-	elbCmd = crtMngr.Command("elb", "Elastic Load Balancing")
+	elbCmd = crtUtils.Command("elb", "Elastic Load Balancing")
 	// elb list
 	elbListCmd        = elbCmd.Command("list", "Describes the specified  the load balancers")
 	elbListCertFilter = elbListCmd.Flag("cert", "String that contains the ARN of the ACM/IAM Certificate").PlaceHolder("ARN").String()
@@ -118,7 +118,7 @@ var (
 	elbBUpdateNoDryRun    = elbBUpdateCmd.Flag("no-dry-run", "Disable dry-run mode").Bool()
 
 	// alb
-	albCmd = crtMngr.Command("alb", "Application Load Balancing")
+	albCmd = crtUtils.Command("alb", "Application Load Balancing")
 	// alb list
 	albListCmd        = albCmd.Command("list", "Describes the specified load balancers")
 	albListCertFilter = albListCmd.Flag("cert", "The ARN of the ACM/IAM SSL Certificate").PlaceHolder("ARN").String()
@@ -136,8 +136,8 @@ var (
 )
 
 func main() {
-	crtMngr.Version("0.1.1")
-	subCmd, err := crtMngr.Parse(os.Args[1:])
+	crtUtils.Version("0.1.1")
+	subCmd, err := crtUtils.Parse(os.Args[1:])
 
 	if err != nil {
 		log.Fatal(err)
